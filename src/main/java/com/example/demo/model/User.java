@@ -35,12 +35,13 @@ public class User implements UserDetails{
 
     public User(){}
 
-    public User(String firstname, String lastname, String email, String username, String password){
+    public User(String firstname, String lastname, String email, String username, String password, Role role){
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId(){
@@ -91,5 +92,9 @@ public class User implements UserDetails{
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
