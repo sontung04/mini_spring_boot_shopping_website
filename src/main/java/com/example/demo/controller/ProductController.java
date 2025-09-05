@@ -1,13 +1,12 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import com.example.demo.model.Product;
-import com.example.demo.repository.ProductRepository;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
+import com.example.demo.dto.ProductDto;
+import com.example.demo.service.ProductService;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,54 +20,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    private final ProductRepository productRepository;
+    
+    private final ProductService service;
 
-    public ProductController(ProductRepository productRepository){
-        this.productRepository = productRepository;
+    public ProductController(ProductService service){
+        this.service = service;
     }
 
     @GetMapping
-    public List<Product> all() {
-        return productRepository.findAll();
+    public ResponseEntity<List<ProductDto>> all() {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public Optional<Product> findById(@PathVariable Long id) {
-        return productRepository.findById(id);
+    public ResponseEntity<ProductDto> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
     
     @GetMapping("/title/{name}")
-    public List<Product> findByName(@PathVariable String name){
-        return productRepository.findByName(name);
+    public ResponseEntity<List<ProductDto>> findByName(@PathVariable String name){
+        return ResponseEntity.ok(service.findByName(name));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public Product create(@RequestBody Product product){
-        return productRepository.save(product);
+    public ResponseEntity<ProductDto> create(@RequestBody ProductDto product){
+        return ResponseEntity.ok(service.createNewProduct(product));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public Product update(@RequestBody Product product, @PathVariable Long id){
-        if (product.getID() != id){
-            throw new NoSuchElementException();
-        }
-        productRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        return productRepository.save(product);
+    public ResponseEntity<ProductDto> update(@RequestBody ProductDto product, @PathVariable Long id){
+        return ResponseEntity.ok(service.updateProduct(id, product));
     }
     
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        productRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        productRepository.deleteById(id);
-    }
-
-    @Bean
-    CommandLineRunner seeder(){
-        return _ -> {
-            productRepository.save(new Product("Computer", 10000.0));
-            productRepository.save(new Product("Mouse", 100.0));
-            productRepository.save(new Product("Keyboard", 200.0));
-            productRepository.save(new Product("Book", 10.0, "Nghin le mot dem"));
-        };
+    public ResponseEntity<String> delete(@PathVariable Long id){
+        service.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }

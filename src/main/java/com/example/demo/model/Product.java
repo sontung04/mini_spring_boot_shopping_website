@@ -19,14 +19,9 @@ public class Product {
     private Double price;
     private String description;
 
-    public Product(){}
-
-    public Product(String name, Double price){
-        this.name = name;
-        this.price = price;
-    }
-
-    public Product(String name, Double price, String description){
+    public Product() {}
+    
+    public Product(String name, Double price, String description) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -37,19 +32,35 @@ public class Product {
         return String.format("Product[id=%d, name='%s', price=%f, description=%s]", id, name, price, description);
     }
     
-    public Long getID(){
+    public Long getId() {
         return id;
     }
 
-    public String getName(){
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
         return name;
     }
 
-    public Double getPrice(){
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getPrice() {
         return price;
     }
 
-    public String getDescription(){
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
