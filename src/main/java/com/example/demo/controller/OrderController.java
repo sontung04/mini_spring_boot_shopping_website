@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.OrderDto;
@@ -13,6 +12,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,12 +33,12 @@ public class OrderController {
     }
     
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<OrderDto>> findByUserId(@RequestParam Long id) {
+    public ResponseEntity<List<OrderDto>> findByUserId(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.findByUserId(id));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> findById(@RequestParam Long id) {
+    public ResponseEntity<OrderDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.findById(id));
     }
 
@@ -47,8 +47,8 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createNewOrder(orderProductList));
     }
     
-    @DeleteMapping
-    public ResponseEntity<String> deleteOrder(Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrderById(id);
         return ResponseEntity.noContent().build();
     }
